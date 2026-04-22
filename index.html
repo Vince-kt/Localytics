@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localytics - Marketing Analytics Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-950">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 flex flex-col border-r border-slate-700 p-6 overflow-y-auto">
+            <div class="logo">📊 Localytics</div>
+            <div class="text-xs text-slate-500 mb-8">Marketing Analytics Platform</div>
+            
+            <nav class="sidebar-nav flex-1">
+                <div class="nav-item active" onclick="switchTab('dashboard')">
+                    <span class="mr-3">📈</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('input')">
+                    <span class="mr-3">📝</span>
+                    <span>Input Data</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('analytics')">
+                    <span class="mr-3">🔍</span>
+                    <span>Analytics</span>
+                </div>
+            </nav>
+
+            <div class="mt-auto pt-8 border-t border-slate-700">
+                <div class="text-xs text-slate-600 mb-4">💾 Data Status</div>
+                <div class="text-xs text-green-400 font-semibold">✓ Offline Ready</div>
+                <div class="text-xs text-slate-600 mt-2">All data saved locally</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 overflow-y-auto p-8">
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content">
+                <div class="mb-8">
+                    <h1 class="text-4xl font-bold text-white mb-2">Analytics Dashboard</h1>
+                    <p class="text-slate-400">Real-time revenue insights across all platforms</p>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="card p-6">
+                        <div class="stat-label">Total Revenue</div>
+                        <div class="stat-value text-3xl mt-3">$<span id="total-revenue">0.00</span></div>
+                        <div class="text-xs text-slate-500 mt-2">Across all platforms</div>
+                    </div>
+
+                    <div class="card p-6">
+                        <div class="stat-label">Total Views</div>
+                        <div class="stat-value text-3xl mt-3"><span id="total-views">0</span>K</div>
+                        <div class="text-xs text-slate-500 mt-2">Combined impressions</div>
+                    </div>
+
+                    <div class="card p-6">
+                        <div class="stat-label">Average RPM</div>
+                        <div class="stat-value text-3xl mt-3">$<span id="avg-rpm">0.00</span></div>
+                        <div class="text-xs text-slate-500 mt-2">Per 1,000 views</div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="card p-8 mb-8">
+                    <h2 class="text-xl font-bold text-white mb-6">Revenue Comparison</h2>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Insights -->
+                <div class="insight-box">
+                    <div class="text-lg font-bold text-white mb-4">🎯 Key Insights</div>
+                    <div id="insights-text" class="text-slate-300 leading-relaxed">
+                        Start by adding revenue data for your platforms to see insights here.
+                    </div>
+                </div>
+
+                <!-- Platform Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <div class="card p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-sm font-bold text-white">TikTok</div>
+                            <span class="text-xl">🎵</span>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">Revenue</div>
+                            <div class="stat-value">$<span id="tiktok-revenue">0.00</span></div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">Views</div>
+                            <div class="stat-value"><span id="tiktok-views">0</span></div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">RPM</div>
+                            <div class="stat-value">$<span id="tiktok-rpm">0.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-sm font-bold text-white">Instagram</div>
+                            <span class="text-xl">📸</span>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">Revenue</div>
+                            <div class="stat-value">$<span id="instagram-revenue">0.00</span></div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">Views</div>
+                            <div class="stat-value"><span id="instagram-views">0</span></div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">RPM</div>
+                            <div class="stat-value">$<span id="instagram-rpm">0.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-sm font-bold text-white">YouTube</div>
+                            <span class="text-xl">▶️</span>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">Revenue</div>
+                            <div class="stat-value">$<span id="youtube-revenue">0.00</span></div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">Views</div>
+                            <div class="stat-value"><span id="youtube-views">0</span></div>
+                        </div>
+                        <div class="platform-stat">
+                            <div class="stat-label">RPM</div>
+                            <div class="stat-value">$<span id="youtube-rpm">0.00</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Tab -->
+            <div id="input-tab" class="tab-content hidden">
+                <div class="mb-8">
+                    <h1 class="text-4xl font-bold text-white mb-2">Input Revenue Data</h1>
+                    <p class="text-slate-400">Add or update platform metrics</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- TikTok Input -->
+                    <div class="card p-8">
+                        <div class="flex items-center mb-6">
+                            <span class="text-4xl mr-3">🎵</span>
+                            <h2 class="text-2xl font-bold text-white">TikTok</h2>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-slate-300 mb-2">Views</label>
+                            <input type="number" id="tiktok-views-input" placeholder="Enter number of views" class="input-field w-full" value="0">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-slate-300 mb-2">Revenue ($)</label>
+                            <input type="number" id="tiktok-revenue-input" placeholder="Enter revenue" class="input-field w-full" step="0.01" value="0">
+                        </div>
+
+                        <button class="btn-primary w-full py-2 px-4 text-white rounded-lg" onclick="updatePlatformData('tiktok')">Save TikTok Data</button>
+                    </div>
+
+                    <!-- Instagram Input -->
+                    <div class="card p-8">
+                        <div class="flex items-center mb-6">
+                            <span class="text-4xl mr-3">📸</span>
+                            <h2 class="text-2xl font-bold text-white">Instagram</h2>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-slate-300 mb-2">Views</label>
+                            <input type="number" id="instagram-views-input" placeholder="Enter number of views" class="input-field w-full" value="0">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-slate-300 mb-2">Revenue ($)</label>
+                            <input type="number" id="instagram-revenue-input" placeholder="Enter revenue" class="input-field w-full" step="0.01" value="0">
+                        </div>
+
+                        <button class="btn-primary w-full py-2 px-4 text-white rounded-lg" onclick="updatePlatformData('instagram')">Save Instagram Data</button>
+                    </div>
+
+                    <!-- YouTube Input -->
+                    <div class="card p-8">
+                        <div class="flex items-center mb-6">
+                            <span class="text-4xl mr-3">▶️</span>
+                            <h2 class="text-2xl font-bold text-white">YouTube</h2>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-slate-300 mb-2">Views</label>
+                            <input type="number" id="youtube-views-input" placeholder="Enter number of views" class="input-field w-full" value="0">
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-slate-300 mb-2">Revenue ($)</label>
+                            <input type="number" id="youtube-revenue-input" placeholder="Enter revenue" class="input-field w-full" step="0.01" value="0">
+                        </div>
+
+                        <button class="btn-primary w-full py-2 px-4 text-white rounded-lg" onclick="updatePlatformData('youtube')">Save YouTube Data</button>
+                    </div>
+                </div>
+
+                <!-- Demo Data & Clear Actions -->
+                <div class="mt-8 flex gap-4">
+                    <button class="btn-secondary py-3 px-6 text-white rounded-lg font-semibold" onclick="loadDemoData()">📊 Load Demo Data</button>
+                    <button class="btn-danger py-3 px-6 text-white rounded-lg font-semibold" onclick="clearAllData()">🗑️ Clear All Data</button>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content hidden">
+                <div class="mb-8">
+                    <h1 class="text-4xl font-bold text-white mb-2">Detailed Analytics</h1>
+                    <p class="text-slate-400">In-depth performance metrics</p>
+                </div>
+
+                <div class="card p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-6">Performance Ranking</h2>
+                    <div id="ranking-container">
+                        <div class="text-slate-400">No data to rank yet. Add data to see rankings.</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card p-8">
+                        <h3 class="text-lg font-bold text-white mb-4">Revenue Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card p-8">
+                        <h3 class="text-lg font-bold text-white mb-4">RPM Comparison</h3>
+                        <div class="chart-container">
+                            <canvas id="rpmChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
